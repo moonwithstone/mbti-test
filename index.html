@@ -284,42 +284,109 @@
             transform: scale(0.98);
         }
 
-        /* 结果页面样式 */
+        /* ========== 结果页面样式（全新设计）========== */
         .result-page {
             display: none;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        /* 角色展示区域 */
+        .character-section {
+            position: relative;
+            padding: 30px;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .character-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+        }
+
+        .character-image {
+            position: relative;
+            z-index: 2;
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .character-image-placeholder {
+            position: relative;
+            z-index: 2;
+            width: 180px;
+            height: 180px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            flex-shrink: 0;
+        }
+
+        .character-info {
+            position: relative;
+            z-index: 2;
+            margin-left: 25px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .character-name {
+            font-size: 20px;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .character-type {
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .character-traits {
+            font-size: 15px;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        /* 详情区域 */
+        .result-details {
+            padding: 30px;
+        }
+
+        .result-type-name {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
             text-align: center;
         }
 
-        .result-type {
-            font-size: 56px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-
-        .result-name {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .result-desc {
-            color: #555;
-            line-height: 1.8;
-            margin-bottom: 25px;
-            text-align: left;
-            font-size: 15px;
-        }
-
         .dimensions {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .dimension {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .dimension-label {
@@ -331,10 +398,12 @@
 
         .dimension-left {
             color: #667eea;
+            font-weight: 500;
         }
 
         .dimension-right {
             color: #764ba2;
+            font-weight: 500;
         }
 
         .dimension-bar {
@@ -352,7 +421,22 @@
             height: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 10px;
-            transition: width 0.5s ease;
+            transition: width 0.8s ease;
+        }
+
+        .result-desc {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 15px;
+            text-align: justify;
+        }
+
+        .traits-title {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
         .traits {
@@ -371,6 +455,19 @@
             color: #555;
         }
 
+        .result-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .result-buttons .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 15px 20px;
+            font-size: 16px;
+        }
+
         .btn-secondary {
             background: #f0f0f0;
             color: #333;
@@ -378,20 +475,7 @@
 
         .btn-secondary:hover {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .buttons .btn {
-            flex: 1;
-            min-width: 140px;
-            padding: 15px 20px;
-            font-size: 16px;
+            background: #e8e8e8;
         }
 
         /* 已完成页面 */
@@ -436,10 +520,6 @@
                 font-size: 18px;
             }
 
-            .result-type {
-                font-size: 48px;
-            }
-
             .features {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
@@ -452,6 +532,43 @@
             .code-input {
                 font-size: 18px;
                 letter-spacing: 5px;
+            }
+
+            .character-section {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px 20px;
+            }
+
+            .character-image,
+            .character-image-placeholder {
+                width: 140px;
+                height: 140px;
+                margin-bottom: 20px;
+            }
+
+            .character-image-placeholder {
+                font-size: 60px;
+            }
+
+            .character-info {
+                margin-left: 0;
+            }
+
+            .character-type {
+                font-size: 42px;
+            }
+
+            .character-name {
+                font-size: 18px;
+            }
+
+            .result-buttons {
+                flex-direction: column;
+            }
+
+            .result-buttons .btn {
+                width: 100%;
             }
         }
 
@@ -572,20 +689,40 @@
             <p>正在分析你的性格类型...</p>
         </div>
 
-        <!-- 结果页面 -->
-        <div class="card result-page" id="resultPage">
-            <div class="result-type" id="resultType"></div>
-            <div class="result-name" id="resultName"></div>
-            
-            <div class="dimensions" id="dimensions"></div>
-            
-            <div class="result-desc" id="resultDesc"></div>
-            
-            <h3 style="margin-bottom: 15px; color: #333;">性格特点</h3>
-            <div class="traits" id="traits"></div>
-            
-            <div class="buttons">
-                <button class="btn" onclick="shareResult()">分享结果</button>
+        <!-- 结果页面（全新设计） -->
+        <div class="result-page" id="resultPage">
+            <div class="result-card">
+                <!-- 角色展示区 -->
+                <div class="character-section" id="characterSection">
+                    <div class="character-bg" id="characterBg"></div>
+                    <div class="character-image-placeholder" id="characterPlaceholder">🦊</div>
+                    <img class="character-image" id="characterImage" style="display:none;" alt="角色">
+                    <div class="character-info">
+                        <div class="character-name" id="characterName">尼克</div>
+                        <div class="character-type" id="resultType">ENTP</div>
+                        <div class="character-traits" id="characterTraits">
+                            机智善辩、思维敏捷<br>
+                            总能想出意想不到的解决方案
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 详情区 -->
+                <div class="result-details">
+                    <h2 class="result-type-name" id="resultName">辩论家</h2>
+                    
+                    <div class="dimensions" id="dimensions"></div>
+                    
+                    <p class="result-desc" id="resultDesc"></p>
+                    
+                    <h3 class="traits-title">性格特点</h3>
+                    <div class="traits" id="traits"></div>
+                    
+                    <div class="result-buttons">
+                        <button class="btn btn-secondary" onclick="restartTest()">🔄 重新测试</button>
+                        <button class="btn" onclick="shareResult()">📤 分享结果</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -608,6 +745,7 @@
 
         // 当前验证码信息
         let currentCodeData = null;
+        let currentCode = '';
 
         // ========== LeanCloud API 调用 ==========
         
@@ -678,6 +816,7 @@
                 
                 // 验证成功，保存数据
                 currentCodeData = codeData;
+                currentCode = code;
                 showHomePage(code);
                 
             } catch (error) {
@@ -765,23 +904,169 @@
             { q: "当计划被打乱时，你会：", a: "感到不安，想尽快回到正轨", b: "觉得没关系，顺其自然", d: "JP" }
         ];
 
+        // ========== 性格数据（含疯狂动物城角色）==========
+        // 注意：需要替换为你自己的图片URL
         const personalities = {
-            "INTJ": { name: "建筑师", desc: "INTJ是具有战略思维的独立思考者。他们善于制定长期计划，对知识有强烈渴望，追求完美和效率。他们往往有独特的见解，不随波逐流，在自己感兴趣的领域会投入大量精力钻研。", traits: ["战略思维", "独立自主", "追求完美", "理性分析", "目标导向"] },
-            "INTP": { name: "逻辑学家", desc: "INTP是富有创造力的分析者，喜欢探索理论和抽象概念。他们对知识有无尽的好奇心，享受解决复杂问题的过程。虽然在社交上可能显得内敛，但在感兴趣的话题上会非常健谈。", traits: ["逻辑思维", "好奇心强", "创新思维", "客观理性", "独立思考"] },
-            "ENTJ": { name: "指挥官", desc: "ENTJ是天生的领导者，有强烈的驱动力和组织能力。他们善于制定战略目标并带领团队实现，做事果断高效，追求卓越。他们享受挑战，不畏困难，总是充满自信。", traits: ["领导力强", "果断高效", "战略眼光", "自信果敢", "追求卓越"] },
-            "ENTP": { name: "辩论家", desc: "ENTP是机智灵活的思想家，喜欢智力上的挑战和辩论。他们思维敏捷，善于从不同角度看问题，不喜欢墨守成规。他们充满创意，喜欢探索新的可能性。", traits: ["思维敏捷", "善于辩论", "创意丰富", "适应力强", "挑战传统"] },
-            "INFJ": { name: "提倡者", desc: "INFJ是富有洞察力的理想主义者，对人性有深刻理解。他们追求有意义的人生，希望能对世界产生积极影响。虽然性格内敛，但内心世界丰富，对他人有强烈的同理心。", traits: ["洞察力强", "富有同理心", "理想主义", "追求意义", "内心丰富"] },
-            "INFP": { name: "调停者", desc: "INFP是富有想象力的理想主义者，追求内心的和谐与真实。他们重视个人价值观，有丰富的内心世界和创造力。对美和情感有敏锐的感知，常常通过艺术或写作表达自己。", traits: ["想象力丰富", "追求真实", "富有创造力", "重视价值", "感性细腻"] },
-            "ENFJ": { name: "主人公", desc: "ENFJ是富有魅力的领导者，天生善于理解和激励他人。他们关心他人的成长和幸福，乐于帮助别人实现潜能。他们有很强的社交能力，能够凝聚团队向共同目标努力。", traits: ["善于激励", "富有魅力", "关心他人", "领导力强", "热情洋溢"] },
-            "ENFP": { name: "竞选者", desc: "ENFP是热情洋溢的创意者，对生活充满好奇和热情。他们喜欢探索新的可能性，善于发现他人的潜力。他们乐观开朗，富有感染力，能够激发周围人的热情。", traits: ["热情洋溢", "创意丰富", "乐观开朗", "善于交际", "追求自由"] },
-            "ISTJ": { name: "物流师", desc: "ISTJ是可靠负责的实干家，重视传统和秩序。他们做事认真细致，有强烈的责任感和职业道德。他们脚踏实地，言出必行，是值得信赖的伙伴。", traits: ["可靠负责", "认真细致", "重视传统", "脚踏实地", "言出必行"] },
-            "ISFJ": { name: "守卫者", desc: "ISFJ是温暖体贴的守护者，默默关心和照顾身边的人。他们有强烈的责任感，做事细心周到。他们重视和谐稳定，愿意为他人付出，是可靠的支持者。", traits: ["温暖体贴", "细心周到", "责任心强", "默默付出", "重视和谐"] },
-            "ESTJ": { name: "总经理", desc: "ESTJ是高效务实的组织者，善于管理和执行。他们重视秩序和规则，做事有条理，追求效率。他们直接坦率，有很强的执行力，是可靠的管理者。", traits: ["高效务实", "组织能力强", "重视秩序", "直接坦率", "执行力强"] },
-            "ESFJ": { name: "执政官", desc: "ESFJ是热心助人的社交者，善于照顾他人的需求。他们重视和谐的人际关系，乐于为他人服务。他们热情友好，是团队中的粘合剂，能够营造温馨的氛围。", traits: ["热心助人", "善于社交", "重视和谐", "体贴周到", "乐于服务"] },
-            "ISTP": { name: "鉴赏家", desc: "ISTP是冷静灵活的实践者，善于分析和解决实际问题。他们喜欢动手操作，对机械和工具有天生的兴趣。他们独立自主，做事讲究效率，在危机时刻能保持冷静。", traits: ["冷静理性", "动手能力强", "独立自主", "灵活务实", "善于分析"] },
-            "ISFP": { name: "探险家", desc: "ISFP是温和敏感的艺术家，有独特的审美和价值观。他们享受当下，对美有敏锐的感知。他们不喜欢冲突，追求内心的和谐，用行动而非言语表达关爱。", traits: ["温和敏感", "审美独特", "享受当下", "追求和谐", "艺术天赋"] },
-            "ESTP": { name: "企业家", desc: "ESTP是精力充沛的行动派，喜欢冒险和刺激。他们善于把握机会，做事果断迅速。他们务实灵活，善于应对突发状况，是天生的问题解决者。", traits: ["精力充沛", "行动迅速", "善于冒险", "务实灵活", "把握机会"] },
-            "ESFP": { name: "表演者", desc: "ESFP是热情活泼的娱乐者，喜欢成为众人焦点。他们享受生活，善于营造欢乐氛围。他们待人友善，乐观开朗，能够感染周围的人，让大家感到快乐。", traits: ["热情活泼", "乐观开朗", "善于娱乐", "待人友善", "享受生活"] }
+            "INTJ": { 
+                name: "建筑师", 
+                desc: "INTJ是具有战略思维的独立思考者。他们善于制定长期计划，对知识有强烈渴望，追求完美和效率。他们往往有独特的见解，不随波逐流，在自己感兴趣的领域会投入大量精力钻研。", 
+                traits: ["战略思维", "独立自主", "追求完美", "理性分析", "目标导向"],
+                character: "水獭夫人",
+                characterTraits: "冷静理性、深谋远虑<br>总能看透事情本质<br>追求完美的策划者",
+                // emoji: "🦦",
+                color: "#1a237e",
+                image: "images/intj.png"  // 替换为你的图片路径
+            },
+            "INTP": { 
+                name: "逻辑学家", 
+                desc: "INTP是富有创造力的分析者，喜欢探索理论和抽象概念。他们对知识有无尽的好奇心，享受解决复杂问题的过程。虽然在社交上可能显得内敛，但在感兴趣的话题上会非常健谈。", 
+                traits: ["逻辑思维", "好奇心强", "创新思维", "客观理性", "独立思考"],
+                character: "耗牛博士",
+                characterTraits: "逻辑缜密、追求真理<br>沉浸在知识的海洋<br>低调但智慧超群",
+                // emoji: "🦬",
+                color: "#4a148c",
+                image: "images/intp.png"
+            },
+            "ENTJ": { 
+                name: "指挥官", 
+                desc: "ENTJ是天生的领导者，有强烈的驱动力和组织能力。他们善于制定战略目标并带领团队实现，做事果断高效，追求卓越。他们享受挑战，不畏困难，总是充满自信。", 
+                traits: ["领导力强", "果断高效", "战略眼光", "自信果敢", "追求卓越"],
+                character: "狮明德市长",
+                characterTraits: "雄心勃勃、掌控全局<br>天生的领袖气质<br>目标明确、执行力强",
+                // emoji: "🦁",
+                color: "#b71c1c",
+                image: "images/entj.png"
+            },
+            "ENTP": { 
+                name: "辩论家", 
+                desc: "ENTP是机智灵活的思想家，喜欢智力上的挑战和辩论。他们思维敏捷，善于从不同角度看问题，不喜欢墨守成规。他们充满创意，喜欢探索新的可能性。", 
+                traits: ["思维敏捷", "善于辩论", "创意丰富", "适应力强", "挑战传统"],
+                character: "尼克",
+                characterTraits: "机智善辩、思维敏捷<br>总能想出意想不到的解决方案<br>表面玩世不恭，实则洞察力超强",
+                // emoji: "🦊",
+                color: "#2e7d32",
+                image: "images/entp.png"
+            },
+            "INFJ": { 
+                name: "提倡者", 
+                desc: "INFJ是富有洞察力的理想主义者，对人性有深刻理解。他们追求有意义的人生，希望能对世界产生积极影响。虽然性格内敛，但内心世界丰富，对他人有强烈的同理心。", 
+                traits: ["洞察力强", "富有同理心", "理想主义", "追求意义", "内心丰富"],
+                character: "牛局长",
+                characterTraits: "外冷内热、洞察人心<br>坚守正义与原则<br>默默守护着城市的和平",
+                // emoji: "🐃",
+                color: "#37474f",
+                image: "images/infj.png"
+            },
+            "INFP": { 
+                name: "调停者", 
+                desc: "INFP是富有想象力的理想主义者，追求内心的和谐与真实。他们重视个人价值观，有丰富的内心世界和创造力。对美和情感有敏锐的感知，常常通过艺术或写作表达自己。", 
+                traits: ["想象力丰富", "追求真实", "富有创造力", "重视价值", "感性细腻"],
+                character: "夏奇羊",
+                characterTraits: "温柔敏感、才华横溢<br>用音乐表达内心世界<br>追求真实自我的艺术家",
+                // emoji: "🐑",
+                color: "#e91e63",
+                image: "images/infp.png"
+            },
+            "ENFJ": { 
+                name: "主人公", 
+                desc: "ENFJ是富有魅力的领导者，天生善于理解和激励他人。他们关心他人的成长和幸福，乐于帮助别人实现潜能。他们有很强的社交能力，能够凝聚团队向共同目标努力。", 
+                traits: ["善于激励", "富有魅力", "关心他人", "领导力强", "热情洋溢"],
+                character: "羊副市长",
+                characterTraits: "表面温和、善于社交<br>懂得如何影响他人<br>有着强大的说服力",
+                // emoji: "🐏",
+                color: "#7b1fa2",
+                image: "images/enfj.png"
+            },
+            "ENFP": { 
+                name: "竞选者", 
+                desc: "ENFP是热情洋溢的创意者，对生活充满好奇和热情。他们喜欢探索新的可能性，善于发现他人的潜力。他们乐观开朗，富有感染力，能够激发周围人的热情。", 
+                traits: ["热情洋溢", "创意丰富", "乐观开朗", "善于交际", "追求自由"],
+                character: "朱迪",
+                characterTraits: "充满热情、永不放弃<br>相信每个人都可以改变世界<br>乐观积极的追梦者",
+                // emoji: "🐰",
+                color: "#1976d2",
+                image: "images/enfp.png"
+            },
+            "ISTJ": { 
+                name: "物流师", 
+                desc: "ISTJ是可靠负责的实干家，重视传统和秩序。他们做事认真细致，有强烈的责任感和职业道德。他们脚踏实地，言出必行，是值得信赖的伙伴。", 
+                traits: ["可靠负责", "认真细致", "重视传统", "脚踏实地", "言出必行"],
+                character: "犀牛警官",
+                characterTraits: "严谨负责、一丝不苟<br>坚守岗位、恪尽职守<br>值得信赖的守护者",
+                // emoji: "🦏",
+                color: "#455a64",
+                image: "images/istj.png"
+            },
+            "ISFJ": { 
+                name: "守卫者", 
+                desc: "ISFJ是温暖体贴的守护者，默默关心和照顾身边的人。他们有强烈的责任感，做事细心周到。他们重视和谐稳定，愿意为他人付出，是可靠的支持者。", 
+                traits: ["温暖体贴", "细心周到", "责任心强", "默默付出", "重视和谐"],
+                character: "朱迪父母",
+                characterTraits: "温暖慈爱、默默守护<br>为家人无私付出<br>传统但开明的守护者",
+                // emoji: "🐇",
+                color: "#6d4c41",
+                image: "images/isfj.png"
+            },
+            "ESTJ": { 
+                name: "总经理", 
+                desc: "ESTJ是高效务实的组织者，善于管理和执行。他们重视秩序和规则，做事有条理，追求效率。他们直接坦率，有很强的执行力，是可靠的管理者。", 
+                traits: ["高效务实", "组织能力强", "重视秩序", "直接坦率", "执行力强"],
+                character: "牛局长",
+                characterTraits: "雷厉风行、注重效率<br>严格执行规章制度<br>铁面无私的执法者",
+                // emoji: "🐂",
+                color: "#263238",
+                image: "images/estj.png"
+            },
+            "ESFJ": { 
+                name: "执政官", 
+                desc: "ESFJ是热心助人的社交者，善于照顾他人的需求。他们重视和谐的人际关系，乐于为他人服务。他们热情友好，是团队中的粘合剂，能够营造温馨的氛围。", 
+                traits: ["热心助人", "善于社交", "重视和谐", "体贴周到", "乐于服务"],
+                character: "豹警官",
+                characterTraits: "热情友好、乐于助人<br>是大家的开心果<br>总能营造欢乐气氛",
+                // emoji: "🐆",
+                color: "#ff6f00",
+                image: "images/esfj.png"
+            },
+            "ISTP": { 
+                name: "鉴赏家", 
+                desc: "ISTP是冷静灵活的实践者，善于分析和解决实际问题。他们喜欢动手操作，对机械和工具有天生的兴趣。他们独立自主，做事讲究效率，在危机时刻能保持冷静。", 
+                traits: ["冷静理性", "动手能力强", "独立自主", "灵活务实", "善于分析"],
+                character: "闪电",
+                characterTraits: "冷静沉稳、不急不躁<br>用自己的节奏做事<br>看似慢条斯理实则心中有数",
+                // emoji: "🦥",
+                color: "#795548",
+                image: "images/istp.png"
+            },
+            "ISFP": { 
+                name: "探险家", 
+                desc: "ISFP是温和敏感的艺术家，有独特的审美和价值观。他们享受当下，对美有敏锐的感知。他们不喜欢冲突，追求内心的和谐，用行动而非言语表达关爱。", 
+                traits: ["温和敏感", "审美独特", "享受当下", "追求和谐", "艺术天赋"],
+                character: "大先生的女儿",
+                characterTraits: "温柔善良、感性细腻<br>有自己独特的审美<br>用行动表达爱意",
+                // emoji: "🐭",
+                color: "#f8bbd9",
+                image: "images/isfp.png"
+            },
+            "ESTP": { 
+                name: "企业家", 
+                desc: "ESTP是精力充沛的行动派，喜欢冒险和刺激。他们善于把握机会，做事果断迅速。他们务实灵活，善于应对突发状况，是天生的问题解决者。", 
+                traits: ["精力充沛", "行动迅速", "善于冒险", "务实灵活", "把握机会"],
+                character: "飞仔",
+                characterTraits: "精力充沛、胆大心细<br>喜欢冒险和刺激<br>随机应变的行动派",
+                // emoji: "🐗",
+                color: "#d84315",
+                image: "images/estp.png"
+            },
+            "ESFP": { 
+                name: "表演者", 
+                desc: "ESFP是热情活泼的娱乐者，喜欢成为众人焦点。他们享受生活，善于营造欢乐氛围。他们待人友善，乐观开朗，能够感染周围的人，让大家感到快乐。", 
+                traits: ["热情活泼", "乐观开朗", "善于娱乐", "待人友善", "享受生活"],
+                character: "夏奇羊",
+                characterTraits: "活力四射、魅力无限<br>天生的表演者<br>用快乐感染每一个人",
+                // emoji: "🦩",
+                color: "#c2185b",
+                image: "images/esfp.png"
+            }
         };
 
         let currentQuestion = 0;
@@ -793,6 +1078,11 @@
             currentQuestion = 0;
             scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
             showQuestion();
+        }
+
+        // 重新测试
+        function restartTest() {
+            startTest();
         }
 
         function showQuestion() {
@@ -870,10 +1160,35 @@
         function displayResult(type, scores) {
             const personality = personalities[type];
             
+            // 设置角色区域背景色
+            const characterSection = document.getElementById('characterSection');
+            characterSection.style.background = `linear-gradient(135deg, ${personality.color} 0%, ${adjustColor(personality.color, 30)} 100%)`;
+            
+            // 设置角色图片或emoji
+            const characterImage = document.getElementById('characterImage');
+            const characterPlaceholder = document.getElementById('characterPlaceholder');
+            
+            if (personality.image) {
+                characterImage.src = personality.image;
+                characterImage.style.display = 'block';
+                characterPlaceholder.style.display = 'none';
+            } else {
+                characterImage.style.display = 'none';
+                characterPlaceholder.style.display = 'flex';
+                characterPlaceholder.textContent = personality.emoji;
+                characterPlaceholder.style.background = `rgba(255,255,255,0.2)`;
+            }
+            
+            // 设置角色信息
+            document.getElementById('characterName').textContent = personality.character;
             document.getElementById('resultType').textContent = type;
+            document.getElementById('characterTraits').innerHTML = personality.characterTraits;
+            
+            // 设置详情
             document.getElementById('resultName').textContent = personality.name;
             document.getElementById('resultDesc').textContent = personality.desc;
             
+            // 设置维度条
             const dimensionsDiv = document.getElementById('dimensions');
             const dims = [
                 { left: 'E 外向', right: '内向 I', leftScore: scores.E, rightScore: scores.I },
@@ -898,14 +1213,30 @@
                 `;
             }).join('');
             
+            // 设置性格特点
             const traitsDiv = document.getElementById('traits');
             traitsDiv.innerHTML = personality.traits.map(t => `<span class="trait">${t}</span>`).join('');
+        }
+
+        // 调整颜色亮度
+        function adjustColor(hex, percent) {
+            const num = parseInt(hex.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return '#' + (0x1000000 + 
+                (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + 
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + 
+                (B < 255 ? B < 1 ? 0 : B : 255)
+            ).toString(16).slice(1);
         }
 
         function shareResult() {
             const type = document.getElementById('resultType').textContent;
             const name = document.getElementById('resultName').textContent;
-            const text = `我的MBTI性格类型是 ${type}（${name}）！快来测测你是什么类型吧～`;
+            const character = document.getElementById('characterName').textContent;
+            const text = `我的MBTI性格类型是 ${type}（${name}），和疯狂动物城里的${character}一样！快来测测你是什么类型吧～`;
             
             if (navigator.share) {
                 navigator.share({ title: 'MBTI性格测试结果', text: text });
