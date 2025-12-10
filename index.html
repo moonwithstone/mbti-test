@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 性格测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        /* 验证码页面样式 */
+        .verify-page {
+            text-align: center;
+        }
+
+        .verify-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .verify-title {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .verify-subtitle {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .code-input-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 20px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .code-input:focus {
+            border-color: #667eea;
+        }
+
+        .code-input.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .verify-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .verify-info-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verify-info-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 首页样式 */
+        .home-page {
+            text-align: center;
+            display: none;
+        }
+
+        .logo {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .user-code-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 20px 15px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 测试页面样式 */
+        .test-page {
+            display: none;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: center;
+            min-height: 80px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .option:active {
+            transform: scale(0.98);
+        }
+
+        /* 结果页面样式 */
+        .result-page {
+            display: none;
+            text-align: center;
+        }
+
+        .result-type {
+            font-size: 56px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .result-name {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .result-desc {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .dimensions {
+            margin-bottom: 30px;
+        }
+
+        .dimension {
+            margin-bottom: 20px;
+        }
+
+        .dimension-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .dimension-left {
+            color: #667eea;
+        }
+
+        .dimension-right {
+            color: #764ba2;
+        }
+
+        .dimension-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dimension-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .trait {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .buttons .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 15px 20px;
+            font-size: 16px;
+        }
+
+        /* 已完成页面 */
+        .completed-page {
+            display: none;
+            text-align: center;
+        }
+
+        .completed-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .completed-title {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .completed-text {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 25px 20px;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .question {
+                font-size: 18px;
+            }
+
+            .result-type {
+                font-size: 48px;
+            }
+
+            .features {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .feature {
+                padding: 15px 10px;
+            }
+
+            .code-input {
+                font-size: 18px;
+                letter-spacing: 5px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 按钮加载状态 */
+        .btn.loading-btn {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading-btn::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 验证码页面 -->
+        <div class="card verify-page" id="verifyPage">
+            <div class="verify-icon">🔐</div>
+            <h2 class="verify-title">输入测试验证码</h2>
+            <p class="verify-subtitle">请输入你收到的专属验证码<br>每个验证码仅限使用一次</p>
+            
+            <div class="code-input-wrapper">
+                <input type="text" class="code-input" id="codeInput" placeholder="请输入验证码" maxlength="8" autocomplete="off">
+                <p class="error-message" id="errorMessage">验证码无效或已被使用</p>
+            </div>
+            
+            <button class="btn" id="verifyBtn" onclick="verifyCode()">验证并进入</button>
+            
+            <div class="verify-info">
+                <div class="verify-info-title">💡 说明</div>
+                <p class="verify-info-text">
+                    • 验证码由测试管理员提供<br>
+                    • 每个验证码只能使用一次<br>
+                    • 完成测试后请保存或截图结果
+                </p>
+            </div>
+        </div>
+
+        <!-- 首页 -->
+        <div class="card home-page" id="homePage">
+            <div class="logo">🧠</div>
+            <h1>MBTI 性格测试</h1>
+            <div class="user-code-badge" id="userCodeBadge">验证码: ----</div>
+            <p class="subtitle">探索你的性格类型，了解真实的自己<br>基于荣格心理学理论的专业测试</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-text">28道题目</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⏱️</div>
+                    <div class="feature-text">约5分钟</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">16种人格</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💡</div>
+                    <div class="feature-text">详细解读</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="startTest()">开始测试</button>
+        </div>
+
+        <!-- 测试页面 -->
+        <div class="card test-page" id="testPage">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="progress-text" id="progressText">1 / 28</div>
+            
+            <div class="question" id="question"></div>
+            
+            <div class="options" id="options"></div>
+        </div>
+
+        <!-- 加载页面 -->
+        <div class="card loading" id="loadingPage">
+            <div class="spinner"></div>
+            <p>正在分析你的性格类型...</p>
+        </div>
+
+        <!-- 结果页面 -->
+        <div class="card result-page" id="resultPage">
+            <div class="result-type" id="resultType"></div>
+            <div class="result-name" id="resultName"></div>
+            
+            <div class="dimensions" id="dimensions"></div>
+            
+            <div class="result-desc" id="resultDesc"></div>
+            
+            <h3 style="margin-bottom: 15px; color: #333;">性格特点</h3>
+            <div class="traits" id="traits"></div>
+            
+            <div class="buttons">
+                <button class="btn" onclick="shareResult()">分享结果</button>
+            </div>
+        </div>
+
+        <!-- 已使用页面 -->
+        <div class="card completed-page" id="completedPage">
+            <div class="completed-icon">✅</div>
+            <h2 class="completed-title">该验证码已使用</h2>
+            <p class="completed-text">此验证码已完成测试，每个验证码只能使用一次。<br>如需再次测试，请联系管理员获取新的验证码。</p>
+            <button class="btn" style="margin-top: 25px;" onclick="showVerifyPage()">使用其他验证码</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== LeanCloud 配置 ==========
+        const LC_CONFIG = {
+            appId: 'rXjTMruNu4IYflQMJGYdXQGY-gzGzoHsz',
+            appKey: 'qRUw6afI4c1m5eHgpPG1fUrM',
+            serverURL: 'https://rxjtmrun.lc-cn-n1-shared.com'
+        };
+
+        // 当前验证码信息
+        let currentCodeData = null;
+
+        // ========== LeanCloud API 调用 ==========
+        
+        async function lcRequest(method, endpoint, data = null) {
+            const url = `${LC_CONFIG.serverURL}/1.1${endpoint}`;
+            const options = {
+                method: method,
+                headers: {
+                    'X-LC-Id': LC_CONFIG.appId,
+                    'X-LC-Key': LC_CONFIG.appKey,
+                    'Content-Type': 'application/json'
+                }
+            };
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            const response = await fetch(url, options);
+            return response.json();
+        }
+
+        // 查询验证码
+        async function queryCode(code) {
+            const where = encodeURIComponent(JSON.stringify({ code: code.toUpperCase() }));
+            return lcRequest('GET', `/classes/VerificationCode?where=${where}`);
+        }
+
+        // 更新验证码状态
+        async function updateCodeStatus(objectId, result) {
+            return lcRequest('PUT', `/classes/VerificationCode/${objectId}`, {
+                used: true,
+                usedAt: { "__type": "Date", "iso": new Date().toISOString() },
+                result: result
+            });
+        }
+
+        // ========== 验证码验证 ==========
+        
+        async function verifyCode() {
+            const input = document.getElementById('codeInput');
+            const btn = document.getElementById('verifyBtn');
+            const code = input.value.trim().toUpperCase();
+            
+            if (!code) {
+                showError('请输入验证码');
+                return;
+            }
+
+            // 显示加载状态
+            btn.disabled = true;
+            btn.classList.add('loading-btn');
+            
+            try {
+                const result = await queryCode(code);
+                
+                if (!result.results || result.results.length === 0) {
+                    showError('验证码不存在');
+                    return;
+                }
+                
+                const codeData = result.results[0];
+                
+                if (codeData.used) {
+                    showError('该验证码已被使用');
+                    hideAllPages();
+                    document.getElementById('completedPage').style.display = 'block';
+                    return;
+                }
+                
+                // 验证成功，保存数据
+                currentCodeData = codeData;
+                showHomePage(code);
+                
+            } catch (error) {
+                console.error('验证失败:', error);
+                showError('网络错误，请重试');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading-btn');
+            }
+        }
+
+        function showError(message) {
+            const input = document.getElementById('codeInput');
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+            input.classList.add('error');
+            input.parentElement.classList.add('shake');
+            
+            setTimeout(() => {
+                input.parentElement.classList.remove('shake');
+            }, 500);
+        }
+
+        function showVerifyPage() {
+            hideAllPages();
+            document.getElementById('verifyPage').style.display = 'block';
+            document.getElementById('codeInput').value = '';
+            document.getElementById('codeInput').classList.remove('error');
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        function showHomePage(code) {
+            hideAllPages();
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('userCodeBadge').textContent = '验证码: ' + code;
+        }
+
+        function hideAllPages() {
+            document.getElementById('verifyPage').style.display = 'none';
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('testPage').style.display = 'none';
+            document.getElementById('loadingPage').style.display = 'none';
+            document.getElementById('resultPage').style.display = 'none';
+            document.getElementById('completedPage').style.display = 'none';
+        }
+
+        // ========== MBTI测试逻辑 ==========
+
+        const questions = [
+            // E vs I (7题)
+            { q: "在社交聚会中，你通常会：", a: "主动结识新朋友，享受社交", b: "倾向于和熟人待在一起", d: "EI" },
+            { q: "周末休息时，你更喜欢：", a: "和朋友外出活动", b: "独自在家看书或看剧", d: "EI" },
+            { q: "工作或学习时，你更喜欢：", a: "在热闹的环境中，有人可以交流", b: "在安静的环境中，独自专注", d: "EI" },
+            { q: "遇到问题时，你倾向于：", a: "找人讨论，通过交流理清思路", b: "自己思考，想清楚再说", d: "EI" },
+            { q: "在团队中，你通常：", a: "积极发言，推动讨论", b: "倾听为主，必要时才发言", d: "EI" },
+            { q: "长时间独处后，你会：", a: "渴望出去见见朋友", b: "感觉很充实，不急着社交", d: "EI" },
+            { q: "你的朋友圈通常是：", a: "广泛，认识很多人", b: "较小，但关系深厚", d: "EI" },
+            
+            // S vs N (7题)
+            { q: "学习新事物时，你更喜欢：", a: "具体的例子和实际操作", b: "理论框架和概念理解", d: "SN" },
+            { q: "你更关注：", a: "当下正在发生的事情", b: "未来的可能性和趋势", d: "SN" },
+            { q: "描述一件事时，你倾向于：", a: "详细描述具体细节", b: "概括性地说明要点", d: "SN" },
+            { q: "你更信任：", a: "亲身经历和实际经验", b: "直觉和第六感", d: "SN" },
+            { q: "阅读时，你更喜欢：", a: "实用性的内容，如教程、攻略", b: "富有想象力的内容，如科幻、哲学", d: "SN" },
+            { q: "做计划时，你更注重：", a: "可行性和具体步骤", b: "创新性和长远目标", d: "SN" },
+            { q: "你认为自己是：", a: "务实的现实主义者", b: "富有想象力的理想主义者", d: "SN" },
+            
+            // T vs F (7题)
+            { q: "做决定时，你更依赖：", a: "逻辑分析和客观事实", b: "个人价值观和对他人的影响", d: "TF" },
+            { q: "与人发生分歧时，你更在意：", a: "谁的观点更正确合理", b: "维护关系和对方的感受", d: "TF" },
+            { q: "给朋友建议时，你倾向于：", a: "直接指出问题，提供解决方案", b: "先表示理解，再委婉建议", d: "TF" },
+            { q: "你认为好的决策应该：", a: "基于事实和数据，公正客观", b: "考虑人情和具体情况，灵活处理", d: "TF" },
+            { q: "别人夸奖你时，你更希望被说：", a: "聪明、能干、有能力", b: "善良、体贴、有爱心", d: "TF" },
+            { q: "在讨论中，你更看重：", a: "论点是否有理有据", b: "讨论氛围是否和谐", d: "TF" },
+            { q: "面对他人的错误，你会：", a: "直接指出，帮助改正", b: "考虑对方感受，找合适时机说", d: "TF" },
+            
+            // J vs P (7题)
+            { q: "你更喜欢的生活方式是：", a: "有计划、有条理的生活", b: "随性、灵活的生活", d: "JP" },
+            { q: "面对deadline，你通常：", a: "提前完成，留有余地", b: "临近截止时效率更高", d: "JP" },
+            { q: "旅行时，你更喜欢：", a: "提前规划好行程", b: "走到哪算哪，随机探索", d: "JP" },
+            { q: "你的工作/学习空间通常：", a: "整洁有序，物品归位", b: "看似凌乱但自己能找到东西", d: "JP" },
+            { q: "做决定时，你倾向于：", a: "快速决定，确定后就执行", b: "保持开放，收集更多信息再说", d: "JP" },
+            { q: "你对规则和流程的态度是：", a: "认为规则能提高效率", b: "认为规则有时会限制创造力", d: "JP" },
+            { q: "当计划被打乱时，你会：", a: "感到不安，想尽快回到正轨", b: "觉得没关系，顺其自然", d: "JP" }
+        ];
+
+        const personalities = {
+            "INTJ": { name: "建筑师", desc: "INTJ是具有战略思维的独立思考者。他们善于制定长期计划，对知识有强烈渴望，追求完美和效率。他们往往有独特的见解，不随波逐流，在自己感兴趣的领域会投入大量精力钻研。", traits: ["战略思维", "独立自主", "追求完美", "理性分析", "目标导向"] },
+            "INTP": { name: "逻辑学家", desc: "INTP是富有创造力的分析者，喜欢探索理论和抽象概念。他们对知识有无尽的好奇心，享受解决复杂问题的过程。虽然在社交上可能显得内敛，但在感兴趣的话题上会非常健谈。", traits: ["逻辑思维", "好奇心强", "创新思维", "客观理性", "独立思考"] },
+            "ENTJ": { name: "指挥官", desc: "ENTJ是天生的领导者，有强烈的驱动力和组织能力。他们善于制定战略目标并带领团队实现，做事果断高效，追求卓越。他们享受挑战，不畏困难，总是充满自信。", traits: ["领导力强", "果断高效", "战略眼光", "自信果敢", "追求卓越"] },
+            "ENTP": { name: "辩论家", desc: "ENTP是机智灵活的思想家，喜欢智力上的挑战和辩论。他们思维敏捷，善于从不同角度看问题，不喜欢墨守成规。他们充满创意，喜欢探索新的可能性。", traits: ["思维敏捷", "善于辩论", "创意丰富", "适应力强", "挑战传统"] },
+            "INFJ": { name: "提倡者", desc: "INFJ是富有洞察力的理想主义者，对人性有深刻理解。他们追求有意义的人生，希望能对世界产生积极影响。虽然性格内敛，但内心世界丰富，对他人有强烈的同理心。", traits: ["洞察力强", "富有同理心", "理想主义", "追求意义", "内心丰富"] },
+            "INFP": { name: "调停者", desc: "INFP是富有想象力的理想主义者，追求内心的和谐与真实。他们重视个人价值观，有丰富的内心世界和创造力。对美和情感有敏锐的感知，常常通过艺术或写作表达自己。", traits: ["想象力丰富", "追求真实", "富有创造力", "重视价值", "感性细腻"] },
+            "ENFJ": { name: "主人公", desc: "ENFJ是富有魅力的领导者，天生善于理解和激励他人。他们关心他人的成长和幸福，乐于帮助别人实现潜能。他们有很强的社交能力，能够凝聚团队向共同目标努力。", traits: ["善于激励", "富有魅力", "关心他人", "领导力强", "热情洋溢"] },
+            "ENFP": { name: "竞选者", desc: "ENFP是热情洋溢的创意者，对生活充满好奇和热情。他们喜欢探索新的可能性，善于发现他人的潜力。他们乐观开朗，富有感染力，能够激发周围人的热情。", traits: ["热情洋溢", "创意丰富", "乐观开朗", "善于交际", "追求自由"] },
+            "ISTJ": { name: "物流师", desc: "ISTJ是可靠负责的实干家，重视传统和秩序。他们做事认真细致，有强烈的责任感和职业道德。他们脚踏实地，言出必行，是值得信赖的伙伴。", traits: ["可靠负责", "认真细致", "重视传统", "脚踏实地", "言出必行"] },
+            "ISFJ": { name: "守卫者", desc: "ISFJ是温暖体贴的守护者，默默关心和照顾身边的人。他们有强烈的责任感，做事细心周到。他们重视和谐稳定，愿意为他人付出，是可靠的支持者。", traits: ["温暖体贴", "细心周到", "责任心强", "默默付出", "重视和谐"] },
+            "ESTJ": { name: "总经理", desc: "ESTJ是高效务实的组织者，善于管理和执行。他们重视秩序和规则，做事有条理，追求效率。他们直接坦率，有很强的执行力，是可靠的管理者。", traits: ["高效务实", "组织能力强", "重视秩序", "直接坦率", "执行力强"] },
+            "ESFJ": { name: "执政官", desc: "ESFJ是热心助人的社交者，善于照顾他人的需求。他们重视和谐的人际关系，乐于为他人服务。他们热情友好，是团队中的粘合剂，能够营造温馨的氛围。", traits: ["热心助人", "善于社交", "重视和谐", "体贴周到", "乐于服务"] },
+            "ISTP": { name: "鉴赏家", desc: "ISTP是冷静灵活的实践者，善于分析和解决实际问题。他们喜欢动手操作，对机械和工具有天生的兴趣。他们独立自主，做事讲究效率，在危机时刻能保持冷静。", traits: ["冷静理性", "动手能力强", "独立自主", "灵活务实", "善于分析"] },
+            "ISFP": { name: "探险家", desc: "ISFP是温和敏感的艺术家，有独特的审美和价值观。他们享受当下，对美有敏锐的感知。他们不喜欢冲突，追求内心的和谐，用行动而非言语表达关爱。", traits: ["温和敏感", "审美独特", "享受当下", "追求和谐", "艺术天赋"] },
+            "ESTP": { name: "企业家", desc: "ESTP是精力充沛的行动派，喜欢冒险和刺激。他们善于把握机会，做事果断迅速。他们务实灵活，善于应对突发状况，是天生的问题解决者。", traits: ["精力充沛", "行动迅速", "善于冒险", "务实灵活", "把握机会"] },
+            "ESFP": { name: "表演者", desc: "ESFP是热情活泼的娱乐者，喜欢成为众人焦点。他们享受生活，善于营造欢乐氛围。他们待人友善，乐观开朗，能够感染周围的人，让大家感到快乐。", traits: ["热情活泼", "乐观开朗", "善于娱乐", "待人友善", "享受生活"] }
+        };
+
+        let currentQuestion = 0;
+        let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+        function startTest() {
+            hideAllPages();
+            document.getElementById('testPage').style.display = 'block';
+            currentQuestion = 0;
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = q.q;
+            document.getElementById('progressText').textContent = `${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progress').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = `
+                <div class="option" onclick="selectOption('a')">A. ${q.a}</div>
+                <div class="option" onclick="selectOption('b')">B. ${q.b}</div>
+            `;
+        }
+
+        function selectOption(choice) {
+            const q = questions[currentQuestion];
+            const dimension = q.d;
+            
+            if (choice === 'a') {
+                scores[dimension[0]]++;
+            } else {
+                scores[dimension[1]]++;
+            }
+            
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                const testPage = document.getElementById('testPage');
+                testPage.style.animation = 'none';
+                setTimeout(() => {
+                    testPage.style.animation = 'slideUp 0.3s ease';
+                    showQuestion();
+                }, 50);
+            } else {
+                showLoading();
+            }
+        }
+
+        function showLoading() {
+            hideAllPages();
+            document.getElementById('loadingPage').style.display = 'block';
+            
+            setTimeout(() => {
+                calculateAndShowResult();
+            }, 2000);
+        }
+
+        async function calculateAndShowResult() {
+            const type = (scores.E >= scores.I ? 'E' : 'I') +
+                        (scores.S >= scores.N ? 'S' : 'N') +
+                        (scores.T >= scores.F ? 'T' : 'F') +
+                        (scores.J >= scores.P ? 'J' : 'P');
+            
+            // 保存结果到服务器
+            if (currentCodeData) {
+                const resultData = {
+                    type: type,
+                    scores: scores,
+                    completedAt: new Date().toISOString()
+                };
+                
+                try {
+                    await updateCodeStatus(currentCodeData.objectId, resultData);
+                } catch (error) {
+                    console.error('保存结果失败:', error);
+                }
+            }
+            
+            hideAllPages();
+            document.getElementById('resultPage').style.display = 'block';
+            displayResult(type, scores);
+        }
+
+        function displayResult(type, scores) {
+            const personality = personalities[type];
+            
+            document.getElementById('resultType').textContent = type;
+            document.getElementById('resultName').textContent = personality.name;
+            document.getElementById('resultDesc').textContent = personality.desc;
+            
+            const dimensionsDiv = document.getElementById('dimensions');
+            const dims = [
+                { left: 'E 外向', right: '内向 I', leftScore: scores.E, rightScore: scores.I },
+                { left: 'S 感觉', right: '直觉 N', leftScore: scores.S, rightScore: scores.N },
+                { left: 'T 思考', right: '情感 F', leftScore: scores.T, rightScore: scores.F },
+                { left: 'J 判断', right: '感知 P', leftScore: scores.J, rightScore: scores.P }
+            ];
+            
+            dimensionsDiv.innerHTML = dims.map(d => {
+                const total = d.leftScore + d.rightScore;
+                const leftPercent = Math.round((d.leftScore / total) * 100);
+                return `
+                    <div class="dimension">
+                        <div class="dimension-label">
+                            <span class="dimension-left">${d.left} ${leftPercent}%</span>
+                            <span class="dimension-right">${100 - leftPercent}% ${d.right}</span>
+                        </div>
+                        <div class="dimension-bar">
+                            <div class="dimension-fill" style="width: ${leftPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            const traitsDiv = document.getElementById('traits');
+            traitsDiv.innerHTML = personality.traits.map(t => `<span class="trait">${t}</span>`).join('');
+        }
+
+        function shareResult() {
+            const type = document.getElementById('resultType').textContent;
+            const name = document.getElementById('resultName').textContent;
+            const text = `我的MBTI性格类型是 ${type}（${name}）！快来测测你是什么类型吧～`;
+            
+            if (navigator.share) {
+                navigator.share({ title: 'MBTI性格测试结果', text: text });
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('结果已复制到剪贴板！');
+                });
+            }
+        }
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('codeInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verifyCode();
+                }
+            });
+            
+            document.getElementById('codeInput').addEventListener('input', function() {
+                this.classList.remove('error');
+                document.getElementById('errorMessage').classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>
