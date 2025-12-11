@@ -138,12 +138,41 @@
         /* 首页样式 */
         .home-page {
             text-align: center;
-            display: none;
         }
 
         .logo {
-            font-size: 64px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 16px;
+        }
+
+        /* 首页头图样式 */
+        .hero-image {
+            width: 100%;
+            margin-bottom: -380px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-img {
+            width: 100%;
+            display: block;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .home-card {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            border-radius: 24px;
+            padding-top: 50px;
         }
 
         h1 {
@@ -619,35 +648,14 @@
 </head>
 <body>
     <div class="container">
-        <!-- 验证码页面 -->
-        <div class="card verify-page" id="verifyPage">
-            <div class="verify-icon">🔐</div>
-            <h2 class="verify-title">输入测试验证码</h2>
-            <p class="verify-subtitle">请输入你收到的专属验证码<br>每个验证码仅限使用一次</p>
-            
-            <div class="code-input-wrapper">
-                <input type="text" class="code-input" id="codeInput" placeholder="请输入验证码" maxlength="8" autocomplete="off">
-                <p class="error-message" id="errorMessage">验证码无效或已被使用</p>
-            </div>
-            
-            <button class="btn" id="verifyBtn" onclick="verifyCode()">验证并进入</button>
-            
-            <div class="verify-info">
-                <div class="verify-info-title">💡 说明</div>
-                <p class="verify-info-text">
-                    • 验证码由测试管理员提供<br>
-                    • 每个验证码只能使用一次<br>
-                    • 完成测试后请保存或截图结果
-                </p>
-            </div>
-        </div>
-
         <!-- 首页 -->
-        <div class="card home-page" id="homePage">
-            <div class="logo">🧠</div>
-            <h1>MBTI 性格测试</h1>
-            <div class="user-code-badge" id="userCodeBadge">验证码: ----</div>
-            <p class="subtitle">探索你的性格类型，了解真实的自己<br>基于荣格心理学理论的专业测试</p>
+        <div class="home-page" id="homePage" style="display: block;">
+            <div class="hero-image">
+                <img src="images/logo.png" alt="疯狂动物城" class="hero-img">
+            </div>
+            <div class="card home-card">
+                <h1>MBTI 性格测试</h1>
+                <p class="subtitle">探索你的性格类型，了解真实的自己<br>基于荣格心理学理论的专业测试</p>
             
             <div class="features">
                 <div class="feature">
@@ -669,6 +677,7 @@
             </div>
             
             <button class="btn" onclick="startTest()">开始测试</button>
+            </div>
         </div>
 
         <!-- 测试页面 -->
@@ -726,145 +735,17 @@
             </div>
         </div>
 
-        <!-- 已使用页面 -->
-        <div class="card completed-page" id="completedPage">
-            <div class="completed-icon">✅</div>
-            <h2 class="completed-title">该验证码已使用</h2>
-            <p class="completed-text">此验证码已完成测试，每个验证码只能使用一次。<br>如需再次测试，请联系管理员获取新的验证码。</p>
-            <button class="btn" style="margin-top: 25px;" onclick="showVerifyPage()">使用其他验证码</button>
-        </div>
     </div>
 
     <script>
-        // ========== LeanCloud 配置 ==========
-        const LC_CONFIG = {
-            appId: 'rXjTMruNu4IYflQMJGYdXQGY-gzGzoHsz',
-            appKey: 'qRUw6afI4c1m5eHgpPG1fUrM',
-            serverURL: 'https://rxjtmrun.lc-cn-n1-shared.com'
-        };
-
-        // 当前验证码信息
-        let currentCodeData = null;
-        let currentCode = '';
-
-        // ========== LeanCloud API 调用 ==========
-        
-        async function lcRequest(method, endpoint, data = null) {
-            const url = `${LC_CONFIG.serverURL}/1.1${endpoint}`;
-            const options = {
-                method: method,
-                headers: {
-                    'X-LC-Id': LC_CONFIG.appId,
-                    'X-LC-Key': LC_CONFIG.appKey,
-                    'Content-Type': 'application/json'
-                }
-            };
-            if (data) {
-                options.body = JSON.stringify(data);
-            }
-            const response = await fetch(url, options);
-            return response.json();
-        }
-
-        // 查询验证码
-        async function queryCode(code) {
-            const where = encodeURIComponent(JSON.stringify({ code: code.toUpperCase() }));
-            return lcRequest('GET', `/classes/VerificationCode?where=${where}`);
-        }
-
-        // 更新验证码状态
-        async function updateCodeStatus(objectId, result) {
-            return lcRequest('PUT', `/classes/VerificationCode/${objectId}`, {
-                used: true,
-                usedAt: { "__type": "Date", "iso": new Date().toISOString() },
-                result: result
-            });
-        }
-
-        // ========== 验证码验证 ==========
-        
-        async function verifyCode() {
-            const input = document.getElementById('codeInput');
-            const btn = document.getElementById('verifyBtn');
-            const code = input.value.trim().toUpperCase();
-            
-            if (!code) {
-                showError('请输入验证码');
-                return;
-            }
-
-            // 显示加载状态
-            btn.disabled = true;
-            btn.classList.add('loading-btn');
-            
-            try {
-                const result = await queryCode(code);
-                
-                if (!result.results || result.results.length === 0) {
-                    showError('验证码不存在');
-                    return;
-                }
-                
-                const codeData = result.results[0];
-                
-                if (codeData.used) {
-                    showError('该验证码已被使用');
-                    hideAllPages();
-                    document.getElementById('completedPage').style.display = 'block';
-                    return;
-                }
-                
-                // 验证成功，保存数据
-                currentCodeData = codeData;
-                currentCode = code;
-                showHomePage(code);
-                
-            } catch (error) {
-                console.error('验证失败:', error);
-                showError('网络错误，请重试');
-            } finally {
-                btn.disabled = false;
-                btn.classList.remove('loading-btn');
-            }
-        }
-
-        function showError(message) {
-            const input = document.getElementById('codeInput');
-            const errorMsg = document.getElementById('errorMessage');
-            errorMsg.textContent = message;
-            errorMsg.classList.add('show');
-            input.classList.add('error');
-            input.parentElement.classList.add('shake');
-            
-            setTimeout(() => {
-                input.parentElement.classList.remove('shake');
-            }, 500);
-        }
-
-        function showVerifyPage() {
-            hideAllPages();
-            document.getElementById('verifyPage').style.display = 'block';
-            document.getElementById('codeInput').value = '';
-            document.getElementById('codeInput').classList.remove('error');
-            document.getElementById('errorMessage').classList.remove('show');
-        }
-
-        function showHomePage(code) {
-            hideAllPages();
-            document.getElementById('homePage').style.display = 'block';
-            document.getElementById('userCodeBadge').textContent = '验证码: ' + code;
-        }
+        // ========== MBTI测试逻辑 ==========
 
         function hideAllPages() {
-            document.getElementById('verifyPage').style.display = 'none';
             document.getElementById('homePage').style.display = 'none';
             document.getElementById('testPage').style.display = 'none';
             document.getElementById('loadingPage').style.display = 'none';
             document.getElementById('resultPage').style.display = 'none';
-            document.getElementById('completedPage').style.display = 'none';
         }
-
-        // ========== MBTI测试逻辑 ==========
 
         const questions = [
             // E vs I (7题)
@@ -990,7 +871,7 @@
                 name: "物流师", 
                 desc: "ISTJ是可靠负责的实干家，重视传统和秩序。他们做事认真细致，有强烈的责任感和职业道德。他们脚踏实地，言出必行，是值得信赖的伙伴。", 
                 traits: ["可靠负责", "认真细致", "重视传统", "脚踏实地", "言出必行"],
-                character: "彩蛋~",
+                character: "犀牛警官",
                 characterTraits: "严格遵守规则，沉稳可靠<br>做事一丝不苟，责任感强<br>是团队中值得信赖的守护者",
                 emoji: "🦏",
                 color: "#455a64",
@@ -1033,14 +914,14 @@
                 character: "闪电",
                 characterTraits: "看似慢条斯理，实则观察入微<br>擅长分析问题本质<br>在关键时刻总能给出精准判断<br>拥有独特的幽默感",
                 emoji: "🦥",
-                color: "#2e7d32",
+                color: "#795548",
                 image: "images/ISTP.png"
             },
             "ISFP": { 
                 name: "探险家", 
                 desc: "ISFP是温和敏感的艺术家，有独特的审美和价值观。他们享受当下，对美有敏锐的感知。他们不喜欢冲突，追求内心的和谐，用行动而非言语表达关爱。", 
                 traits: ["温和敏感", "审美独特", "享受当下", "追求和谐", "艺术天赋"],
-                character: "彩蛋哦",
+                character: "弗鲁弗鲁",
                 characterTraits: "温柔感性，重情重义<br>有自己独特的审美<br>用行动表达爱意<br>外表娇小内心坚强",
                 emoji: "🐹",
                 color: "#f8bbd0",
@@ -1135,21 +1016,6 @@
                         (scores.S >= scores.N ? 'S' : 'N') +
                         (scores.T >= scores.F ? 'T' : 'F') +
                         (scores.J >= scores.P ? 'J' : 'P');
-            
-            // 保存结果到服务器
-            if (currentCodeData) {
-                const resultData = {
-                    type: type,
-                    scores: scores,
-                    completedAt: new Date().toISOString()
-                };
-                
-                try {
-                    await updateCodeStatus(currentCodeData.objectId, resultData);
-                } catch (error) {
-                    console.error('保存结果失败:', error);
-                }
-            }
             
             hideAllPages();
             document.getElementById('resultPage').style.display = 'block';
@@ -1246,19 +1112,6 @@
             }
         }
 
-        // 页面加载
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('codeInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    verifyCode();
-                }
-            });
-            
-            document.getElementById('codeInput').addEventListener('input', function() {
-                this.classList.remove('error');
-                document.getElementById('errorMessage').classList.remove('show');
-            });
-        });
     </script>
 </body>
 </html>
