@@ -326,14 +326,40 @@
             animation: slideUp 0.5s ease;
         }
 
-        /* 角色展示区域 */
+        /* 角色展示区域 - 新版横向布局 */
         .character-section {
             position: relative;
-            padding: 30px;
-            min-height: 280px;
+            padding: 30px 25px;
+            min-height: 200px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             overflow: hidden;
+            background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+        }
+
+        /* 图片在左，文字在右 */
+        .character-section.layout-img-left .character-info {
+            order: 2;
+            padding-left: 20px;
+            padding-right: 0;
+        }
+
+        .character-section.layout-img-left .character-image,
+        .character-section.layout-img-left .character-image-placeholder {
+            order: 1;
+        }
+
+        /* 文字在左，图片在右 */
+        .character-section.layout-img-right .character-info {
+            order: 1;
+            padding-right: 20px;
+            padding-left: 0;
+        }
+
+        .character-section.layout-img-right .character-image,
+        .character-section.layout-img-right .character-image-placeholder {
+            order: 2;
         }
 
         .character-bg {
@@ -347,55 +373,65 @@
             opacity: 0.15;
         }
 
+        .character-info {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            flex: 1;
+        }
+
+        .character-type {
+            font-size: 64px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .character-name {
+            font-size: 22px;
+            margin-bottom: 12px;
+            opacity: 0.95;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .type-name-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .character-traits {
+            font-size: 15px;
+            line-height: 1.9;
+            opacity: 0.95;
+        }
+
         .character-image {
             position: relative;
             z-index: 2;
-            width: 180px;
-            height: 180px;
-            border-radius: 20px;
+            width: 160px;
+            height: 160px;
+            border-radius: 16px;
             object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             flex-shrink: 0;
         }
 
         .character-image-placeholder {
             position: relative;
             z-index: 2;
-            width: 180px;
-            height: 180px;
-            border-radius: 20px;
+            width: 160px;
+            height: 160px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 80px;
             flex-shrink: 0;
-        }
-
-        .character-info {
-            position: relative;
-            z-index: 2;
-            margin-left: 25px;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .character-name {
-            font-size: 20px;
-            margin-bottom: 5px;
-            opacity: 0.9;
-        }
-
-        .character-type {
-            font-size: 56px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        .character-traits {
-            font-size: 15px;
-            line-height: 1.8;
-            opacity: 0.95;
+            background: rgba(255,255,255,0.2);
         }
 
         /* 详情区域 */
@@ -569,23 +605,29 @@
                 padding: 25px 20px;
             }
 
+            .character-info {
+                padding-right: 0;
+                order: 1;
+            }
+
             .character-image,
             .character-image-placeholder {
                 width: 140px;
                 height: 140px;
-                margin-bottom: 20px;
+                order: 2;
+                margin-top: 20px;
             }
 
             .character-image-placeholder {
                 font-size: 60px;
             }
 
-            .character-info {
-                margin-left: 0;
+            .type-name-row {
+                justify-content: center;
             }
 
             .character-type {
-                font-size: 42px;
+                font-size: 48px;
             }
 
             .character-name {
@@ -704,16 +746,18 @@
                 <!-- 角色展示区 -->
                 <div class="character-section" id="characterSection">
                     <div class="character-bg" id="characterBg"></div>
-                    <div class="character-image-placeholder" id="characterPlaceholder">🦊</div>
-                    <img class="character-image" id="characterImage" style="display:none;" alt="角色">
                     <div class="character-info">
-                        <div class="character-name" id="characterName">尼克</div>
-                        <div class="character-type" id="resultType">ENTP</div>
+                        <div class="type-name-row">
+                            <div class="character-type" id="resultType">ENTP</div>
+                            <div class="character-name" id="characterName">尼克</div>
+                        </div>
                         <div class="character-traits" id="characterTraits">
                             机智善辩、思维敏捷<br>
                             总能想出意想不到的解决方案
                         </div>
                     </div>
+                    <div class="character-image-placeholder" id="characterPlaceholder">🦊</div>
+                    <img class="character-image" id="characterImage" style="display:none;" alt="角色">
                 </div>
 
                 <!-- 详情区 -->
@@ -795,7 +839,8 @@
                 characterTraits: "记忆力惊人，活在自己世界<br>对细节有超强的把控力<br>沉浸思考，追求完美的策划者",
                 emoji: "🐂",
                 color: "#1a237e",
-                image: "images/INTJ.png"
+                image: "images/INTJ.png",
+                layout: "img-left"
             },
             "INTP": { 
                 name: "逻辑学家", 
@@ -805,7 +850,8 @@
                 characterTraits: "思维严谨，善于分析<br>对复杂概念有独到见解<br>喜欢独处思考，是典型的思想家<br>在专业领域极具创造力",
                 emoji: "🐭",
                 color: "#4a148c",
-                image: "images/INTP.png"
+                image: "images/INTP.png",
+                layout: "img-right"
             },
             "ENTJ": { 
                 name: "指挥官", 
@@ -815,7 +861,8 @@
                 characterTraits: "战略眼光独到，执行力强<br>天生的领导者，善于规划和组织<br>在挑战面前表现得游刃有余",
                 emoji: "🐴",
                 color: "#b71c1c",
-                image: "images/ENTJ.png"
+                image: "images/ENTJ.png",
+                layout: "img-left"
             },
             "ENTP": { 
                 name: "辩论家", 
@@ -825,7 +872,8 @@
                 characterTraits: "机智善辩、思维敏捷<br>总能想出意想不到的解决方案<br>表面玩世不恭，实则洞察力超强<br>是团队中的智囊担当",
                 emoji: "🦊",
                 color: "#2e7d32",
-                image: "images/ENTP.png"
+                image: "images/ENTP.png",
+                layout: "img-right"
             },
             "INFJ": { 
                 name: "提倡者", 
@@ -835,7 +883,8 @@
                 characterTraits: "思想深邃，富有远见<br>善于洞察他人需求<br>表面温和，实则内心坚定<br>是理想主义的实践者",
                 emoji: "🐑",
                 color: "#37474f",
-                image: "images/INFJ.png"
+                image: "images/INFJ.png",
+                layout: "img-left"
             },
             "INFP": { 
                 name: "调停者", 
@@ -845,7 +894,8 @@
                 characterTraits: "内心丰富，理想主义<br>重视和谐与理解<br>虽然外表低调，但潜力无限<br>在关键时刻往往能一鸣惊人",
                 emoji: "🐌",
                 color: "#00695c",
-                image: "images/INFP.png"
+                image: "images/INFP.png",
+                layout: "img-right"
             },
             "ENFJ": { 
                 name: "主人公", 
@@ -855,7 +905,8 @@
                 characterTraits: "充满正义感，行动力爆表<br>天生的领导者，善于激励他人<br>虽然偶尔会固执己见<br>但永远朝着目标勇往直前",
                 emoji: "🐰",
                 color: "#1565c0",
-                image: "images/ENFJ.png"
+                image: "images/ENFJ.png",
+                layout: "img-left"
             },
             "ENFP": { 
                 name: "竞选者", 
@@ -865,7 +916,8 @@
                 characterTraits: "充满激情和想象力<br>善于启发和鼓舞他人<br>喜欢尝试新鲜事物<br>是团队中的灵感来源",
                 emoji: "🦩",
                 color: "#e91e63",
-                image: "images/ENFP.png"
+                image: "images/ENFP.png",
+                layout: "img-right"
             },
             "ISTJ": { 
                 name: "物流师", 
@@ -875,7 +927,8 @@
                 characterTraits: "严格遵守规则，沉稳可靠<br>做事一丝不苟，责任感强<br>是团队中值得信赖的守护者",
                 emoji: "🦏",
                 color: "#455a64",
-                image: "images/ISTJ.png"
+                image: "images/ISTJ.png",
+                layout: "img-left"
             },
             "ISFJ": { 
                 name: "守卫者", 
@@ -885,7 +938,8 @@
                 characterTraits: "细心体贴，负责任<br>注重细节和秩序<br>是团队中可靠的支柱<br>默默付出，不求回报",
                 emoji: "🦛",
                 color: "#6d4c41",
-                image: "images/ISFJ.png"
+                image: "images/ISFJ.png",
+                layout: "img-right"
             },
             "ESTJ": { 
                 name: "总经理", 
@@ -895,7 +949,8 @@
                 characterTraits: "注重效率和秩序<br>是可靠的管理者<br>做事一丝不苟，责任感强<br>偶尔会显得过于严肃",
                 emoji: "🐃",
                 color: "#263238",
-                image: "images/ESTJ.png"
+                image: "images/ESTJ.png",
+                layout: "img-left"
             },
             "ESFJ": { 
                 name: "执政官", 
@@ -905,7 +960,8 @@
                 characterTraits: "温暖关怀，为家人操心<br>善良体贴，乐于助人<br>是团队中的温暖担当",
                 emoji: "🦦",
                 color: "#ff6f00",
-                image: "images/ESFJ.png"
+                image: "images/ESFJ.png",
+                layout: "img-right"
             },
             "ISTP": { 
                 name: "鉴赏家", 
@@ -915,7 +971,8 @@
                 characterTraits: "看似慢条斯理，实则观察入微<br>擅长分析问题本质<br>在关键时刻总能给出精准判断<br>拥有独特的幽默感",
                 emoji: "🦥",
                 color: "#2e7d32",
-                image: "images/ISTP.png"
+                image: "images/ISTP.png",
+                layout: "img-left"
             },
             "ISFP": { 
                 name: "探险家", 
@@ -925,7 +982,8 @@
                 characterTraits: "温柔感性，重情重义<br>有自己独特的审美<br>用行动表达爱意<br>外表娇小内心坚强",
                 emoji: "🐹",
                 color: "#f8bbd0",
-                image: "images/ISFP.png"
+                image: "images/ISFP.png",
+                layout: "img-right"
             },
             "ESTP": { 
                 name: "企业家", 
@@ -935,7 +993,8 @@
                 characterTraits: "动手能力强，善于解决问题<br>喜欢冒险和尝试<br>在实战中学习成长<br>是团队中的行动派",
                 emoji: "🦝",
                 color: "#d84315",
-                image: "images/ESTP.png"
+                image: "images/ESTP.png",
+                layout: "img-left"
             },
             "ESFP": { 
                 name: "表演者", 
@@ -945,7 +1004,8 @@
                 characterTraits: "热情洋溢，享受当下<br>是团队的开心果<br>喜欢与人互动，充满感染力<br>在社交场合中游刃有余",
                 emoji: "🐆",
                 color: "#c2185b",
-                image: "images/ESFP.png"
+                image: "images/ESFP.png",
+                layout: "img-right"
             }
         };
 
@@ -1025,9 +1085,13 @@
         function displayResult(type, scores) {
             const personality = personalities[type];
             
-            // 设置角色区域背景色
+            // 设置角色区域背景色和布局
             const characterSection = document.getElementById('characterSection');
             characterSection.style.background = `linear-gradient(135deg, ${personality.color} 0%, ${adjustColor(personality.color, 30)} 100%)`;
+            
+            // 设置布局方向（图片在左或在右）
+            characterSection.classList.remove('layout-img-left', 'layout-img-right');
+            characterSection.classList.add('layout-' + (personality.layout || 'img-right'));
             
             // 设置角色图片或emoji
             const characterImage = document.getElementById('characterImage');
