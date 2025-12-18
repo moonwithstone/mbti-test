@@ -413,8 +413,8 @@
         .character-image {
             position: relative;
             z-index: 2;
-            width: 240px;
-            height: 240px;
+            width: 200px;
+            height: 200px;
             border-radius: 16px;
             object-fit: cover;
             flex-shrink: 0;
@@ -423,13 +423,13 @@
         .character-image-placeholder {
             position: relative;
             z-index: 2;
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 200px;
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 80px;
+            font-size: 100px;
             flex-shrink: 0;
             background: rgba(255,255,255,0.2);
         }
@@ -599,39 +599,44 @@
                 letter-spacing: 5px;
             }
 
+            /* 手机端保持左右布局 */
             .character-section {
-                flex-direction: column;
-                text-align: center;
-                padding: 25px 20px;
+                padding: 20px 15px;
+                min-height: 160px;
             }
 
             .character-info {
-                padding-right: 0;
-                order: 1;
+                padding-left: 12px !important;
+                padding-right: 12px !important;
             }
 
             .character-image,
             .character-image-placeholder {
-                width: 140px;
-                height: 140px;
-                order: 2;
-                margin-top: 20px;
+                width: 120px;
+                height: 120px;
+                min-width: 120px;
             }
 
             .character-image-placeholder {
-                font-size: 60px;
+                font-size: 50px;
             }
 
             .type-name-row {
-                justify-content: center;
+                flex-wrap: wrap;
             }
 
             .character-type {
-                font-size: 48px;
+                font-size: 36px;
             }
 
             .character-name {
-                font-size: 18px;
+                font-size: 16px;
+                margin-left: 8px;
+            }
+
+            .character-traits {
+                font-size: 13px;
+                line-height: 1.7;
             }
 
             .result-buttons {
