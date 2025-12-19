@@ -1056,12 +1056,8 @@
             currentQuestion++;
             
             if (currentQuestion < questions.length) {
-                const testPage = document.getElementById('testPage');
-                testPage.style.animation = 'none';
-                setTimeout(() => {
-                    testPage.style.animation = 'slideUp 0.3s ease';
-                    showQuestion();
-                }, 50);
+                // 直接切换到下一题，无闪烁
+                showQuestion();
             } else {
                 showLoading();
             }
